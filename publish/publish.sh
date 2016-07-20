@@ -119,8 +119,6 @@ cat > ${DEB_DIR}/etc/mycroft/mycroft.ini << EOM
 module = "mimic"
 mimic.path = "/opt/mycroft/bin/mimic"
 mimic.voice = "ap"
-[metrics_client]
-enabled = True
 
 EOM
 

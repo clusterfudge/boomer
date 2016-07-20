@@ -24,7 +24,6 @@ from speech_recognition import UnknownValueError
 from mycroft.configuration import ConfigurationManager
 from mycroft.identity import IdentityManager
 from mycroft.metrics import Stopwatch
-from mycroft.util import CerberusAccessDenied
 from mycroft.util.log import getLogger
 from mycroft.util.setup_base import get_version
 
@@ -70,69 +69,8 @@ class IBMRecognizerWrapper(object):
             audio, username, password, language=language, show_all=show_all)
 
 
-class CerberusGoogleProxy(object):
-    def __init__(self, _):
-        self.version = get_version()
-
-    def transcribe(
-            self, audio, language="en-US", show_all=False, metrics=None):
-        timer = Stopwatch()
-        timer.start()
-        identity = IdentityManager().get()
-        headers = {}
-        if identity.token:
-            headers['Authorization'] = 'Bearer %s:%s' % (
-                identity.device_id, identity.token)
-
-        response = requests.post(config.get("proxy_host") +
-                                 "/stt/google_v2?language=%s&version=%s"
-                                 % (language, self.version),
-                                 audio.get_flac_data(),
-                                 headers=headers)
-
-        if metrics:
-            t = timer.stop()
-            metrics.timer("mycroft.cerberus.proxy.client.time_s", t)
-            metrics.timer("mycroft.stt.remote.time_s", t)
-
-        if response.status_code == 401:
-            raise CerberusAccessDenied()
-
-        try:
-            actual_result = response.json()
-        except:
-            raise UnknownValueError()
-
-        log.info("STT JSON: " + json.dumps(actual_result))
-        if show_all:
-            return actual_result
-
-        # return the best guess
-        if "alternative" not in actual_result:
-            raise UnknownValueError()
-        alternatives = actual_result["alternative"]
-        if len([alt for alt in alternatives if alt.get('confidence')]) > 0:
-            # if there is at least one element with confidence, force it to
-            # the front
-            alternatives.sort(
-                key=lambda e: e.get('confidence', 0.0), reverse=True)
-
-        for entry in alternatives:
-            if "transcript" in entry:
-                return entry["transcript"]
-
-        if len(alternatives) > 0:
-            log.error(
-                "Found %d entries, but none with a transcript." % len(
-                    alternatives))
-
-        # no transcriptions available
-        raise UnknownValueError()
-
-
 RECOGNIZER_IMPLS = {
     'google': GoogleRecognizerWrapper,
-    'google_proxy': CerberusGoogleProxy,
     'wit': WitRecognizerWrapper,
     'ibm': IBMRecognizerWrapper
 }

@@ -18,14 +18,13 @@
 
 from adapt.intent import IntentBuilder
 from os.path import dirname
+from pyowm import OWM
 from pyowm.exceptions.api_call_error import APICallError
 from multi_key_dict import multi_key_dict
 
 import time
 
-from mycroft.identity import IdentityManager
 from mycroft.skills.core import MycroftSkill
-from mycroft.skills.weather.owm_repackaged import OWM
 from mycroft.util.log import getLogger
 
 __author__ = 'jdorleans'
@@ -49,8 +48,7 @@ class WeatherSkill(MycroftSkill):
 
     @property
     def owm(self):
-        return OWM(API_key=self.config.get('api_key', ''),
-                   identity=IdentityManager().get())
+        return OWM(API_key=self.config.get('api_key', ''))
 
     def initialize(self):
         self.load_data_files(dirname(__file__))
@@ -139,8 +137,6 @@ class WeatherSkill(MycroftSkill):
             self.__condition_feedback(weather)
             time.sleep(5)
             self.enclosure.activate_mouth_listeners(True)
-        except APICallError as e:
-            self.__api_error(e)
         except Exception as e:
             LOGGER.error("Error: {0}".format(e))
 
@@ -162,11 +158,6 @@ class WeatherSkill(MycroftSkill):
 
     def stop(self):
         pass
-
-    def __api_error(self, e):
-        LOGGER.error("Error: {0}".format(e))
-        if e._triggering_error.code == 401:
-            self.speak_dialog('not.paired')
 
 
 def create_skill():

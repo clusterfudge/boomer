@@ -16,17 +16,10 @@
 # along with Mycroft Core.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from StringIO import StringIO
 from os.path import dirname
-
 import re
-import requests
 import wolframalpha
-from six.moves import urllib
-
-from mycroft.identity import IdentityManager
 from mycroft.skills.core import MycroftSkill
-from mycroft.util import CerberusAccessDenied
 from mycroft.util.log import getLogger
 from mycroft.messagebus.message import Message
 
@@ -74,27 +67,15 @@ class EnglishQuestionParser(object):
         return None
 
 
-class CerberusWolframAlphaClient(object):
-    """
-    Wolfram|Alpha v2.0 client
-    """
-
-    def query(self, query):
-        """
-        Query Wolfram|Alpha with query using the v2.0 API
-        """
-        identity = IdentityManager().get()
-        bearer_token = 'Bearer %s:%s' % (identity.device_id, identity.token)
-        query = urllib.parse.urlencode(dict(input=query))
-        url = 'https://cerberus.mycroft.ai/wolframalpha/v2/query?' + query
-        headers = {'Authorization': bearer_token}
-        response = requests.get(url, headers=headers)
-        if response.status_code == 401:
-            raise CerberusAccessDenied()
-        return wolframalpha.Result(StringIO(response.content))
-
-
 class WolframAlphaSkill(MycroftSkill):
+    POD_ID_CANDIDATES = [
+        'Value',
+        'NotableFacts:PeopleData',
+        'BasicInformation:PeopleData',
+        'Definition',
+        'DecimalApproximation',
+    ]
+
     def __init__(self):
         MycroftSkill.__init__(self, name="WolframAlphaSkill")
         self.__init_client()
@@ -102,10 +83,7 @@ class WolframAlphaSkill(MycroftSkill):
 
     def __init_client(self):
         key = self.config.get('api_key')
-        if key:
-            self.client = wolframalpha.Client(key)
-        else:
-            self.client = CerberusWolframAlphaClient()
+        self.client = wolframalpha.Client(key)
 
     def initialize(self):
         self.init_dialog(dirname(__file__))
@@ -118,23 +96,20 @@ class WolframAlphaSkill(MycroftSkill):
             return result
         except:
             try:
-                result = self.__find_pod_id(res.pods, 'Value')
-                if not result:
-                    result = self.__find_pod_id(
-                        res.pods, 'NotableFacts:PeopleData')
-                    if not result:
-                        result = self.__find_pod_id(
-                            res.pods, 'BasicInformation:PeopleData')
-                        if not result:
-                            result = self.__find_pod_id(res.pods, 'Definition')
-                            if not result:
-                                result = self.__find_pod_id(
-                                    res.pods, 'DecimalApproximation')
-                                if result:
-                                    result = result[:5]
-                                else:
-                                    result = self.__find_num(
-                                        res.pods, '200')
+                pod_id = None
+                for candidate_pod_id in self.POD_ID_CANDIDATES:
+                    result = self.__find_pod_id(res.pods, candidate_pod_id)
+                    if result:
+                        pod_id = candidate_pod_id
+                        break
+                if pod_id:
+                    # HACK: if this was a decimal approx, limit to 5 numbers?
+                    # I think this is to keep things like pi from rambling, but
+                    # doesn't account for >6-digit figures and would truncate 100k to 10k
+                    if pod_id == 'DecimalApproximation':
+                        result = result[:5]
+                else:
+                    result = self.__find_num(res.pods, '200')
                 return result
             except:
                 return result
@@ -164,9 +139,6 @@ class WolframAlphaSkill(MycroftSkill):
             res = self.client.query(query)
             result = self.get_result(res)
             others = self._find_did_you_mean(res)
-        except CerberusAccessDenied as e:
-            self.speak_dialog('not.paired')
-            return
         except Exception as e:
             logger.exception(e)
             self.speak_dialog("not.understood", data={'phrase': phrase})

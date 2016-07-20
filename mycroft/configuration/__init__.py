@@ -100,62 +100,6 @@ class ConfigurationLoader(object):
         return config
 
 
-class RemoteConfiguration(object):
-    """
-    map remote configuration properties to
-    config in the [core] config section
-    """
-    __remote_keys = {
-        "default_location": "location",
-        "default_language": "lang",
-        "timezone": "timezone"
-    }
-
-    @staticmethod
-    def validate_config(config):
-        if not (config and isinstance(config, dict)):
-            logger.error("Invalid configuration: %s" % config)
-            raise TypeError
-
-    @staticmethod
-    def load(config=None):
-        RemoteConfiguration.validate_config(config)
-
-        identity = IdentityManager().get()
-        config_remote = config.get("remote_configuration", {})
-        enabled = str2bool(config_remote.get("enabled", "False"))
-
-        if enabled and identity.token:
-            url = config_remote.get("url")
-            auth_header = "Bearer %s:%s" % (identity.device_id, identity.token)
-            try:
-                response = requests.get(url,
-                                        headers={"Authorization": auth_header})
-                user = response.json()
-                RemoteConfiguration.__load_attributes(config, user)
-            except Exception as e:
-                logger.error(
-                    "Failed to fetch remote configuration: %s" % repr(e))
-        else:
-            logger.debug(
-                "Device not paired, cannot retrieve remote configuration.")
-        return config
-
-    @staticmethod
-    def __load_attributes(config, user):
-        config_core = config["core"]
-
-        for att in user["attributes"]:
-            att_name = att.get("attribute_name")
-            name = RemoteConfiguration.__remote_keys.get(att_name)
-
-            if name:
-                config_core[name] = str(att.get("attribute_value"))
-                logger.info(
-                    "Accepting remote configuration: core[%s] == %s" %
-                    (name, att["attribute_value"]))
-
-
 class ConfigurationManager(object):
     """
     Static management utility for calling up cached configuration.
@@ -165,18 +109,12 @@ class ConfigurationManager(object):
     @staticmethod
     def load_defaults():
         ConfigurationManager.__config = ConfigurationLoader.load()
-        return RemoteConfiguration.load(ConfigurationManager.__config)
+        return ConfigurationManager.__config
 
     @staticmethod
     def load_local(locations=None, keep_user_config=True):
         return ConfigurationLoader.load(ConfigurationManager.get(), locations,
                                         keep_user_config)
-
-    @staticmethod
-    def load_remote():
-        if not ConfigurationManager.__config:
-            ConfigurationManager.__config = ConfigurationLoader.load()
-        return RemoteConfiguration.load(ConfigurationManager.__config)
 
     @staticmethod
     def get(locations=None):

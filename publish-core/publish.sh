@@ -142,9 +142,6 @@ module = "mimic"
 mimic.path = "/usr/local/bin/mimic"
 mimic.voice = "ap"
 
-[metrics_client]
-enabled = True
-
 EOM
 
 #if [ ${ARCH} = "armhf" ]; then

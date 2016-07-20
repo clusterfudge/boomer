@@ -3,7 +3,7 @@ import unittest
 from os.path import dirname, join
 
 from mycroft.configuration import ConfigurationLoader, ConfigurationManager, \
-    DEFAULT_CONFIG, SYSTEM_CONFIG, USER_CONFIG, RemoteConfiguration
+    DEFAULT_CONFIG, SYSTEM_CONFIG, USER_CONFIG
 
 __author__ = 'jdorleans'
 
@@ -31,6 +31,9 @@ class AbstractConfigurationTest(unittest.TestCase):
         self.assertIsNotNone(tts)
         mod = tts.get('module', None)
         self.assertEquals(mod, module)
+
+    def tearDown(self):
+        ConfigurationManager.load_defaults()
 
 
 class ConfigurationLoaderTest(AbstractConfigurationTest):
@@ -94,21 +97,6 @@ class ConfigurationLoaderTest(AbstractConfigurationTest):
         self.assertEquals(config, {})
 
 
-class RemoteConfigurationTest(AbstractConfigurationTest):
-    def test_validate_config(self):
-        try:
-            RemoteConfiguration.validate_config(self.create_config())
-        except TypeError:
-            self.fail()
-
-    def test_validate_config_with_invalid_config(self):
-        self.assertRaises(TypeError, RemoteConfiguration.validate_config)
-
-    def test_load_without_remote_config(self):
-        config = self.create_config()
-        self.assertEquals(RemoteConfiguration.load(config), config)
-
-
 class ConfigurationManagerTest(AbstractConfigurationTest):
     def test_load_defaults(self):
         ConfigurationManager.load_defaults()
@@ -122,10 +110,6 @@ class ConfigurationManagerTest(AbstractConfigurationTest):
         ConfigurationManager.load_defaults()
         config = ConfigurationManager.load_local([self.config_path])
         self.assert_config(config, 'pt-br', 'espeak')
-
-    def test_load_remote(self):
-        ConfigurationManager.load_defaults()
-        self.assert_config(ConfigurationManager.load_remote())
 
     def test_get(self):
         ConfigurationManager.load_defaults()

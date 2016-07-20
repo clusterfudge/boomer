@@ -27,7 +27,6 @@ from mycroft.configuration import ConfigurationManager
 from mycroft.session import SessionManager
 from mycroft.util.setup_base import get_version
 
-config = ConfigurationManager.get().get('metrics_client')
 metrics_log = getLogger("METRICS")
 
 
@@ -88,7 +87,6 @@ class MetricsAggregator(object):
         self._attributes[name] = value
 
     def flush(self):
-        publisher = MetricsPublisher()
         payload = {
             'counters': self._counters,
             'timers': self._timers,
@@ -101,24 +99,4 @@ class MetricsAggregator(object):
         if count > 0:
             metrics_log.debug(json.dumps(payload))
 
-            def publish():
-                publisher.publish(payload)
-            threading.Thread(target=publish).start()
 
-
-class MetricsPublisher(object):
-    def __init__(self,
-                 url=config.get("url"),
-                 enabled=str2bool(config.get("enabled"))):
-        self.url = url
-        self.enabled = enabled
-
-    def publish(self, events):
-        if 'session_id' not in events:
-            session_id = SessionManager.get().session_id
-            events['session_id'] = session_id
-        if self.enabled:
-            requests.post(
-                self.url,
-                headers={'Content-Type': 'application/json'},
-                data=json.dumps(events), verify=False)

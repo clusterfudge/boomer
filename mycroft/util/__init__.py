@@ -86,7 +86,3 @@ def kill(names):
                     break
             except:
                 pass
-
-
-class CerberusAccessDenied(Exception):
-    pass
