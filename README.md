@@ -1,4 +1,4 @@
-Mycroft [![Build Status](https://travis-ci.org/MycroftAI/mycroft-core.svg?branch=master)](https://travis-ci.org/MycroftAI/mycroft-core)
+Mycroft [![Build Status](https://travis-ci.org/clusterfydge/mycroft-core.svg?branch=master)](https://travis-ci.org/clusterfudge/mycroft-core)
 ==========
 
 Full docs at: https://docs.mycroft.ai
