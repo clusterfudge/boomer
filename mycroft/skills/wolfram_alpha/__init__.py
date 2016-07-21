@@ -105,7 +105,8 @@ class WolframAlphaSkill(MycroftSkill):
                 if pod_id:
                     # HACK: if this was a decimal approx, limit to 5 numbers?
                     # I think this is to keep things like pi from rambling, but
-                    # doesn't account for >6-digit figures and would truncate 100k to 10k
+                    # doesn't account for >6-digit figures and would truncate
+                    # 100k to 10k
                     if pod_id == 'DecimalApproximation':
                         result = result[:5]
                 else:

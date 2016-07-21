@@ -98,5 +98,3 @@ class MetricsAggregator(object):
                  len(payload['levels']))
         if count > 0:
             metrics_log.debug(json.dumps(payload))
-
-
