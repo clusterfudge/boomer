@@ -1,4 +1,5 @@
 .idea
+.travis-solo
 *.pyc
 *.swp
 *~
