@@ -13,5 +13,5 @@ install:
  - pip install -r test-requirements.txt
 # command to run tests
 script:
- - pep8 mycroft test
+ - pep8 boomer test
  - ./start.sh unittest --fail-on-error
