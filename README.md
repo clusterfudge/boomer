@@ -1,10 +1,7 @@
-Mycroft [![Build Status](https://travis-ci.org/clusterfydge/mycroft-core.svg?branch=master)](https://travis-ci.org/clusterfudge/mycroft-core)
+Mycroft [![Build Status](https://travis-ci.org/clusterfudge/mycroft-core.svg?branch=master)](https://travis-ci.org/clusterfudge/mycroft-core)
 ==========
 
-Full docs at: https://docs.mycroft.ai
-
-
-Join the Mycroft Slack(chat) channel: http://mycroft-ai-slack-invite.herokuapp.com/
+NOTE: This is a fork
 
 # Getting Started in Ubuntu - Development Environment
 - run `build_host_setup.sh` (installs debian packages with apt-get, please read it) 
