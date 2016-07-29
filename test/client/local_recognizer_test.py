@@ -13,7 +13,7 @@ DATA_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), "data")
 class LocalRecognizerTest(unittest.TestCase):
     def setUp(self):
         self.recognizer = RecognizerLoop.create_boomer_recognizer(16000,
-                                                                   "en-us")
+                                                                  "en-us")
 
     def testRecognizerWrapper(self):
         source = WavFile(os.path.join(DATA_DIR, "hey_boomer.wav"))
