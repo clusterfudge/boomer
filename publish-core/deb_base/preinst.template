@@ -6,20 +6,20 @@ function stop_service() {
 }
 
 # shutdown existing services
-if [[ -f "/etc/init.d/mycroft-speech-client" ]]; then
-  stop_service "mycroft-speech-client"
+if [[ -f "/etc/init.d/boomer-speech-client" ]]; then
+  stop_service "boomer-speech-client"
 fi
 
-if [[ -f "/etc/init.d/mycroft-skills" ]]; then
-  stop_service "mycroft-skills"
+if [[ -f "/etc/init.d/boomer-skills" ]]; then
+  stop_service "boomer-skills"
 fi
 
-if [[ -f "/etc/init.d/mycroft-messagebus" ]]; then
-  stop_service "mycroft-messagebus"
+if [[ -f "/etc/init.d/boomer-messagebus" ]]; then
+  stop_service "boomer-messagebus"
 fi
 
-if [[ -f "/etc/init.d/mycroft-enclosure-client" ]]; then
- /etc/init.d/mycroft-enclosure-client stop
+if [[ -f "/etc/init.d/boomer-enclosure-client" ]]; then
+ /etc/init.d/boomer-enclosure-client stop
 fi
 
 id -u %%INSTALL_USER%% &>/dev/null || useradd %%INSTALL_USER%%

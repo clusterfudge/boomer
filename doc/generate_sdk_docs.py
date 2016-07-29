@@ -2,18 +2,18 @@ import os
 import pdoc
 __author__ = 'seanfitz'
 
-DOCS_NAME = "mycroft-skills-sdk"
+DOCS_NAME = "boomer-skills-sdk"
 
 DOC_OUTPUT_DIR = "build/doc/%s/html" % DOCS_NAME
 
 documented_sdk_modules = [
-        "mycroft.configuration",
-        "mycroft.configuration.config",
-        "mycroft.dialog",
-        "mycroft.filesystem",
-        "mycroft.session",
-        "mycroft.util",
-        "mycroft.util.log"
+        "boomer.configuration",
+        "boomer.configuration.config",
+        "boomer.dialog",
+        "boomer.filesystem",
+        "boomer.session",
+        "boomer.util",
+        "boomer.util.log"
     ]
 
 
@@ -41,11 +41,11 @@ def main():
         html = pdoc.html(m, allsubmodules=True)
         with open(module_to_docpath(m), 'w') as f:
             f.write(html)
-    import mycroft
-    mycroft.__all__ = [m[8:] for m in documented_sdk_modules]
-    root_module = pdoc.Module(mycroft)
+    import boomer
+    boomer.__all__ = [m[8:] for m in documented_sdk_modules]
+    root_module = pdoc.Module(boomer)
     html = root_module.html(external_links=False, link_prefix='', source=True)
-    with open(module_to_docpath("mycroft"), 'w') as f:
+    with open(module_to_docpath("boomer"), 'w') as f:
             f.write(html)
 
 

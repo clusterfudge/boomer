@@ -24,24 +24,24 @@ function python_package() {
   python ${TOP}/setup.py clean
   python ${TOP}/setup.py bdist_egg
   python ${TOP}/setup.py sdist
-  _run python ${TOP}/setup.py sdist upload -r mycroft
+  _run python ${TOP}/setup.py sdist upload -r boomer
   rm ${TOP}/setup.py
 }
 
 VERSION="$(basename $(git describe --abbrev=0 --tags) | sed -e 's/v//g')"
 
-echo "version=\"${VERSION}\"" > ${TOP}/mycroft/__version__.py
+echo "version=\"${VERSION}\"" > ${TOP}/boomer/__version__.py
 
 # build and upload pypi distribution to internal pypi mirror
 cd ${TOP}
-python_package mycroft-base-setup.py
+python_package boomer-base-setup.py
 python_package skills-sdk-setup.py
 
 
 # build distributable virtualenv
 ARCH="$(dpkg --print-architecture)"
 SYSTEM_TARGET="/usr/local/"
-ARTIFACT_BASE="mycroft-core-${ARCH}-${VERSION}"
+ARTIFACT_BASE="boomer-core-${ARCH}-${VERSION}"
 MYCROFT_ARTIFACT_DIR=${TOP}/build/${ARTIFACT_BASE}
 
 virtualenv --always-copy --clear ${MYCROFT_ARTIFACT_DIR}
@@ -52,7 +52,7 @@ pip install -r ${TOP}/requirements.txt
 cd ${TOP}/pocketsphinx-python
 python setup.py install
 cd ${TOP}
-python mycroft-base-setup.py install
+python boomer-base-setup.py install
 
 ${TOP}/install-pygtk.sh
 
@@ -72,7 +72,7 @@ function replace() {
   mv ${TMP_FILE} ${FILE}
 }
 
-DEB_BASE="mycroft-core-${ARCH}_${VERSION}-1"
+DEB_BASE="boomer-core-${ARCH}_${VERSION}-1"
 DEB_DIR=${TOP}/build/${DEB_BASE}
 mkdir -p ${DEB_DIR}/DEBIAN
 
@@ -80,33 +80,33 @@ echo "Creating debian control file"
 # setup control file
 CONTROL_FILE=${DEB_DIR}/DEBIAN/control
 cp ${TOP}/publish-core/deb_base/control.template ${CONTROL_FILE}
-replace ${CONTROL_FILE} "%%PACKAGE%%" "mycroft-core"
+replace ${CONTROL_FILE} "%%PACKAGE%%" "boomer-core"
 replace ${CONTROL_FILE} "%%VERSION%%" "${VERSION}"
 replace ${CONTROL_FILE} "%%ARCHITECTURE%%" "${ARCH}"
-replace ${CONTROL_FILE} "%%DESCRIPTION%%" "mycroft-core"
+replace ${CONTROL_FILE} "%%DESCRIPTION%%" "boomer-core"
 replace ${CONTROL_FILE} "%%DEPENDS%%" "portaudio19-dev, libglib2.0-0, flac, espeak, mpg123, mimic, avrdude"
 echo "Creating debian preinst file"
 PREINST_FILE=${DEB_DIR}/DEBIAN/preinst
 cp ${TOP}/publish-core/deb_base/preinst.template ${PREINST_FILE}
-replace ${PREINST_FILE} "%%INSTALL_USER%%" "mycroft"
+replace ${PREINST_FILE} "%%INSTALL_USER%%" "boomer"
 chmod 0755 ${PREINST_FILE}
 
 echo "Creating debian postinst file"
 POSTINST_FILE=${DEB_DIR}/DEBIAN/postinst
 cp ${TOP}/publish-core/deb_base/postinst.template ${POSTINST_FILE}
-replace ${POSTINST_FILE} "%%INSTALL_USER%%" "mycroft"
+replace ${POSTINST_FILE} "%%INSTALL_USER%%" "boomer"
 chmod 0755 ${POSTINST_FILE}
 
 echo "Creating debian prerm file"
 PRERM_FILE=${DEB_DIR}/DEBIAN/prerm
 cp ${TOP}/publish-core/deb_base/prerm.template ${PRERM_FILE}
-replace ${PRERM_FILE} "%%INSTALL_USER%%" "mycroft"
+replace ${PRERM_FILE} "%%INSTALL_USER%%" "boomer"
 chmod 0755 ${PRERM_FILE}
 
 echo "Creating debian postrm file"
 POSTRM_FILE=${DEB_DIR}/DEBIAN/postrm
 cp ${TOP}/publish-core/deb_base/postrm.template ${POSTRM_FILE}
-replace ${POSTRM_FILE} "%%INSTALL_USER%%" "mycroft"
+replace ${POSTRM_FILE} "%%INSTALL_USER%%" "boomer"
 chmod 0755 ${POSTRM_FILE}
 
 # setup init scripts
@@ -119,24 +119,24 @@ function setup_init_script() {
   replace ${INIT_SCRIPT} "%%NAME%%" "${NAME}"
   replace ${INIT_SCRIPT} "%%DESCRIPTION%%" "${NAME}"
   replace ${INIT_SCRIPT} "%%COMMAND%%" "\/usr\/local\/bin\/${NAME}"
-  replace ${INIT_SCRIPT} "%%USERNAME%%" "mycroft"
+  replace ${INIT_SCRIPT} "%%USERNAME%%" "boomer"
   chmod a+x ${INIT_SCRIPT}
 }
 
-setup_init_script "mycroft-messagebus"
-setup_init_script "mycroft-skills"
-setup_init_script "mycroft-speech-client"
+setup_init_script "boomer-messagebus"
+setup_init_script "boomer-skills"
+setup_init_script "boomer-speech-client"
 
 if [ ${ARCH} = "armhf" ]; then
-  setup_init_script "mycroft-enclosure-client"
+  setup_init_script "boomer-enclosure-client"
 fi
 
 mkdir -p ${DEB_DIR}/${SYSTEM_TARGET}
 cp -rf ${TOP}/build/${ARTIFACT_BASE}/* ${DEB_DIR}/${SYSTEM_TARGET}
 
-mkdir -p ${DEB_DIR}/etc/mycroft
+mkdir -p ${DEB_DIR}/etc/boomer
 # write installed config file
-cat > ${DEB_DIR}/etc/mycroft/mycroft.ini << EOM
+cat > ${DEB_DIR}/etc/boomer/boomer.ini << EOM
 [tts]
 module = "mimic"
 mimic.path = "/usr/local/bin/mimic"
@@ -148,7 +148,7 @@ EOM
   # ensures enclosure version
 ENCLOSURE_DIR=${DEB_DIR}/opt
 mkdir -p ${ENCLOSURE_DIR}
-cp ${TOP}/mycroft/client/enclosure/version.txt ${ENCLOSURE_DIR}/enclosure-version.txt
+cp ${TOP}/boomer/client/enclosure/version.txt ${ENCLOSURE_DIR}/enclosure-version.txt
 #fi
 
 cd $(dirname ${DEB_DIR})
@@ -156,11 +156,11 @@ dpkg-deb --build ${DEB_BASE}
 mv *.deb ${TOP}/dist
 
 cd ${TOP}/dist
-_run s3cmd -c ${HOME}/.s3cfg.mycroft-artifact-writer sync --acl-public . s3://bootstrap.mycroft.ai/artifacts/apt/${ARCH}/${VERSION}/
+_run s3cmd -c ${HOME}/.s3cfg.boomer-artifact-writer sync --acl-public . s3://bootstrap.boomer.ai/artifacts/apt/${ARCH}/${VERSION}/
 echo ${VERSION} > latest
-_run s3cmd -c ${HOME}/.s3cfg.mycroft-artifact-writer put --acl-public ${TOP}/dist/latest s3://bootstrap.mycroft.ai/artifacts/apt/${ARCH}/latest #cd ${TOP}/dist
+_run s3cmd -c ${HOME}/.s3cfg.boomer-artifact-writer put --acl-public ${TOP}/dist/latest s3://bootstrap.boomer.ai/artifacts/apt/${ARCH}/latest #cd ${TOP}/dist
 
 
-#_run s3cmd -c ${HOME}/.s3cfg.mycroft-artifact-writer sync --acl-public . s3://bootstrap.mycroft.ai/artifacts/${ARCH}/${VERSION}/
+#_run s3cmd -c ${HOME}/.s3cfg.boomer-artifact-writer sync --acl-public . s3://bootstrap.boomer.ai/artifacts/${ARCH}/${VERSION}/
 #echo ${VERSION} > ${TOP}/dist/latest
-#_run s3cmd -c ${HOME}/.s3cfg.mycroft-artifact-writer put --acl-public ${TOP}/dist/latest s3://bootstrap.mycroft.ai/artifacts/${ARCH}/latest
+#_run s3cmd -c ${HOME}/.s3cfg.boomer-artifact-writer put --acl-public ${TOP}/dist/latest s3://bootstrap.boomer.ai/artifacts/${ARCH}/latest

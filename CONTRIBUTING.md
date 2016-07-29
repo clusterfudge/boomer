@@ -1,13 +1,13 @@
 # How to contribute
 
-So you want to contribute to Mycroft?
+So you want to contribute to Boomer?
 This should be as easy as possible for you but there are a few things to consider when contributing.
 The following guidelines for contribution should be followed if you want to submit a pull request.
 
 ## How to prepare
 
 * You need a [GitHub account](https://github.com/signup/free)
-* Submit an [issue ticket](https://github.com/MycroftAI/mycroft/issues) for your issue if there is no one yet.
+* Submit an [issue ticket](https://github.com/BoomerAI/boomer/issues) for your issue if there is no one yet.
 	* Describe the issue and include steps to reproduce if it's a bug.
 	* Ensure to mention the earliest version that you know is affected.
 * If you are able and want to fix this, fork the repository on GitHub
@@ -22,7 +22,7 @@ The following guidelines for contribution should be followed if you want to subm
   5. Make use of the `.editorconfig`-file if provided with the repository.
   6. Make commits of logical units and describe them properly. Use your issue identifier at the very begin of each commit. For instance:
 `git commit -m "Issues-123 - Fixing 'A' sound on Spelling Skill"`
-  7. Before committing, format your code following the PEP8 rules and organize your imports removing unused libs. To check whether you are following these rules, install pep8 and run `pep8 mycroft test` while in the `mycroft-core` folder. This will check for formatting issues in the `mycroft` and `test` folders.
+  7. Before committing, format your code following the PEP8 rules and organize your imports removing unused libs. To check whether you are following these rules, install pep8 and run `pep8 boomer test` while in the `boomer-core` folder. This will check for formatting issues in the `boomer` and `test` folders.
   8. Once you have committed everything and are done with your branch, you have to rebase your code with master. Do the following steps:
       1. Make sure you do not have any changes left on your branch
       2. Checkout on master branch and make sure it is up-to-date
@@ -39,8 +39,8 @@ git rebase master
 git push -f
 ```
   9. If possible, create unit tests for your changes
-     * [Unit Tests for most contributions](https://github.com/MycroftAI/mycroft-core/tree/master/test)
-     * [Intent Tests for new skills](https://docs.mycroft.ai/development/creating-a-skill#testing-your-skill)
+     * [Unit Tests for most contributions](https://github.com/BoomerAI/boomer-core/tree/master/test)
+     * [Intent Tests for new skills](https://docs.boomer.ai/development/creating-a-skill#testing-your-skill)
      * We utilize TRAVIS-CI, which will test each pull request. To test locally you can run: `./start.sh unittest`
   10. Once everything is OK, you can finally [create a Pull Request (PR) on Github](https://help.github.com/articles/using-pull-requests/) in order to be reviewed and merged.
 

@@ -1,0 +1,7 @@
+recursive-include boomer/client/speech/model *
+include requirements.txt
+include boomer/configuration/*.ini
+recursive-include boomer/skills/*/dialog *
+recursive-include boomer/skills/*/vocab *
+include boomer/skills/alarm/alarm.mp3
+#include boomer/tts/boomer_voice_4.0.flitevox

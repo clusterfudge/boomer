@@ -1,6 +1,6 @@
 import unittest
 
-from mycroft.skills.wolfram_alpha import EnglishQuestionParser
+from boomer.skills.wolfram_alpha import EnglishQuestionParser
 
 __author__ = 'wolfgange3311999'
 

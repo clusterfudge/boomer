@@ -1,13 +1,13 @@
 from setuptools import setup
 
-from mycroft.util.setup_base import get_version, place_manifest
+from boomer.util.setup_base import get_version, place_manifest
 
 __author__ = 'seanfitz'
 
 place_manifest("skills-sdk-MANIFEST.in")
 
 setup(
-    name="mycroft-skills-sdk",
+    name="boomer-skills-sdk",
     version=get_version(),
     install_requires=[
         "mustache==0.1.4",
@@ -17,22 +17,22 @@ setup(
         "websocket-client==0.32.0"
     ],
     packages=[
-        "mycroft.configuration",
-        "mycroft.dialog",
-        "mycroft.filesystem",
-        "mycroft.messagebus",
-        "mycroft.messagebus.client",
-        "mycroft.session",
-        "mycroft.skills.intent",
-        "mycroft.skills",
-        "mycroft.util",
-        "mycroft"
+        "boomer.configuration",
+        "boomer.dialog",
+        "boomer.filesystem",
+        "boomer.messagebus",
+        "boomer.messagebus.client",
+        "boomer.session",
+        "boomer.skills.intent",
+        "boomer.skills",
+        "boomer.util",
+        "boomer"
     ],
     include_package_data=True,
 
     entry_points={
         'console_scripts': [
-            'mycroft-skill-container=mycroft.skills.container:main'
+            'boomer-skill-container=boomer.skills.container:main'
         ]
     }
 )

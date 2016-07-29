@@ -12,7 +12,7 @@ def discover_tests():
     tests = {}
     skills = [
         skill for skill
-        in glob.glob(os.path.join(PROJECT_ROOT, 'mycroft/skills/*'))
+        in glob.glob(os.path.join(PROJECT_ROOT, 'boomer/skills/*'))
         if os.path.isdir(skill)
     ]
 
@@ -51,7 +51,7 @@ class IntentTestSequence(unittest.TestCase):
 
     def setUp(self):
         self.emitter = MockSkillsLoader(
-            os.path.join(PROJECT_ROOT, 'mycroft', 'skills')).load_skills()
+            os.path.join(PROJECT_ROOT, 'boomer', 'skills')).load_skills()
 
 if __name__ == '__main__':
     unittest.main()

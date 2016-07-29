@@ -8,11 +8,11 @@ import time
 from os.path import dirname, join
 from speech_recognition import AudioSource
 
-from mycroft.client.speech.listener import RecognizerLoop
-from mycroft.client.speech.local_recognizer import LocalRecognizer
-from mycroft.client.speech.mic import ResponsiveRecognizer
-from mycroft.util.log import getLogger
-from mycroft.client.speech.mic import logger as speech_logger
+from boomer.client.speech.listener import RecognizerLoop
+from boomer.client.speech.local_recognizer import LocalRecognizer
+from boomer.client.speech.mic import ResponsiveRecognizer
+from boomer.util.log import getLogger
+from boomer.client.speech.mic import logger as speech_logger
 
 __author__ = 'wolfgange3311999'
 logger = getLogger('audio_test_runner')
@@ -77,7 +77,7 @@ class FileMockMicrophone(AudioSource):
 class AudioTester(object):
     def __init__(self, samp_rate):
         print  # Pad debug messages
-        self.ww_recognizer = RecognizerLoop.create_mycroft_recognizer(
+        self.ww_recognizer = RecognizerLoop.create_boomer_recognizer(
             samp_rate, 'en-us')
         self.listener = ResponsiveRecognizer(self.ww_recognizer)
         print

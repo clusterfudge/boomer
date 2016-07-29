@@ -1,0 +1,79 @@
+# Copyright 2016 Boomer AI, Inc.
+#
+# This file is part of Boomer Core.
+#
+# Boomer Core is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Boomer Core is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Boomer Core.  If not, see <http://www.gnu.org/licenses/>.
+
+
+import json
+from os.path import expanduser, exists
+
+from boomer.configuration import ConfigurationManager
+from boomer.messagebus.client.ws import WebsocketClient
+from boomer.skills.core import load_skills, THIRD_PARTY_SKILLS_DIR
+from boomer.util.log import getLogger
+logger = getLogger("Skills")
+
+__author__ = 'seanfitz'
+
+client = None
+
+
+def load_skills_callback():
+    global client
+    load_skills(client)
+    config = ConfigurationManager.get()
+    config_core = config.get("core")
+
+    try:
+        ini_third_party_skills_dir = expanduser(
+            config_core.get("third_party_skills_dir"))
+    except AttributeError as e:
+        logger.warning(e.message)
+
+    if exists(THIRD_PARTY_SKILLS_DIR):
+        load_skills(client, THIRD_PARTY_SKILLS_DIR)
+
+    if ini_third_party_skills_dir and exists(ini_third_party_skills_dir):
+        load_skills(client, ini_third_party_skills_dir)
+
+
+def connect():
+    global client
+    client.run_forever()
+
+
+def main():
+    global client
+    client = WebsocketClient()
+
+    def echo(message):
+        try:
+            _message = json.loads(message)
+
+            if _message.get("message_type") == "registration":
+                # do not log tokens from registration messages
+                _message["metadata"]["token"] = None
+            message = json.dumps(_message)
+        except:
+            pass
+        logger.debug(message)
+
+    client.on('message', echo)
+    client.once('open', load_skills_callback)
+    client.run_forever()
+
+
+if __name__ == "__main__":
+    main()
