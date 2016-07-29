@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 import unittest
 
-from mycroft.skills.scheduled_skills import ScheduledSkill
-from mycroft.util.log import getLogger
+from boomer.skills.scheduled_skills import ScheduledSkill
+from boomer.util.log import getLogger
 
 __author__ = 'eward'
 

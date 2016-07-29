@@ -2,7 +2,7 @@ import unittest
 
 from os.path import dirname, join
 
-from mycroft.configuration import ConfigurationLoader, ConfigurationManager, \
+from boomer.configuration import ConfigurationLoader, ConfigurationManager, \
     DEFAULT_CONFIG, SYSTEM_CONFIG, USER_CONFIG
 
 __author__ = 'jdorleans'
@@ -10,7 +10,7 @@ __author__ = 'jdorleans'
 
 class AbstractConfigurationTest(unittest.TestCase):
     def setUp(self):
-        self.config_path = join(dirname(__file__), 'mycroft.ini')
+        self.config_path = join(dirname(__file__), 'boomer.ini')
 
     @staticmethod
     def create_config(lang='en-us', module='mimic'):
@@ -92,7 +92,7 @@ class ConfigurationLoaderTest(AbstractConfigurationTest):
                           None, self.config_path)
 
     def test_load_with_invalid_locations_path(self):
-        locations = ['./invalid/mycroft.ini', './invalid_mycroft.ini']
+        locations = ['./invalid/boomer.ini', './invalid_boomer.ini']
         config = ConfigurationLoader.load(None, locations, False)
         self.assertEquals(config, {})
 

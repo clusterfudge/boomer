@@ -2,8 +2,8 @@ import unittest
 import wolframalpha
 from StringIO import StringIO
 
-from mycroft.skills.wolfram_alpha import WolframAlphaSkill
-from mycroft.util.log import getLogger
+from boomer.skills.wolfram_alpha import WolframAlphaSkill
+from boomer.util.log import getLogger
 
 __author__ = 'eward'
 

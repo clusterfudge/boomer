@@ -1,7 +1,7 @@
 import unittest
 import audioop
 from speech_recognition import AudioSource
-from mycroft.client.speech.mic import ResponsiveRecognizer
+from boomer.client.speech.mic import ResponsiveRecognizer
 
 __author__ = 'seanfitz'
 

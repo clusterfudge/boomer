@@ -4,6 +4,6 @@ Section: base
 Priority: optional
 Architecture: %%ARCHITECTURE%%
 Depends: %%DEPENDS%%
-Maintainer: Arron Atchison <arron.atchison@mycroft.ai>
+Maintainer: Arron Atchison <arron.atchison@boomer.ai>
 Description: %%DESCRIPTION%%
 

@@ -15,7 +15,7 @@ function start_service() {
   invoke-rc.d ${NAME} start
 }
 
-ARTIFACT_HOST="http://bootstrap.mycroft.ai"
+ARTIFACT_HOST="http://bootstrap.boomer.ai"
 ENCLOSURE_VERSION_FILE="/opt/enclosure-version.txt"
 
 
@@ -52,15 +52,15 @@ if [ ${ARCH} = "armhf" ]; then
 fi
 
 
-initialize_service "mycroft-messagebus"
-initialize_service "mycroft-skills"
-initialize_service "mycroft-speech-client"
+initialize_service "boomer-messagebus"
+initialize_service "boomer-skills"
+initialize_service "boomer-speech-client"
 
-start_service "mycroft-messagebus"
-start_service "mycroft-skills"
-start_service "mycroft-speech-client"
+start_service "boomer-messagebus"
+start_service "boomer-skills"
+start_service "boomer-speech-client"
 
 if [ ${ARCH} = "armhf" ]; then
-  start_service "mycroft-enclosure-client"
-  initialize_service "mycroft-enclosure-client"
+  start_service "boomer-enclosure-client"
+  initialize_service "boomer-enclosure-client"
 fi

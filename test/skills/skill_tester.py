@@ -1,7 +1,7 @@
 import json
 from pyee import EventEmitter
-from mycroft.messagebus.message import Message
-from mycroft.skills.core import load_skills
+from boomer.messagebus.message import Message
+from boomer.skills.core import load_skills
 
 __author__ = 'seanfitz'
 

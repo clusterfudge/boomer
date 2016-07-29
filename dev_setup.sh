@@ -33,7 +33,7 @@ if [ $(id -u) -eq 0 ]; then
 fi
 
 TOP=$(cd $(dirname $0) && pwd -L)
-VIRTUALENV_ROOT=${VIRTUALENV_ROOT:-"${HOME}/.virtualenvs/mycroft"}
+VIRTUALENV_ROOT=${VIRTUALENV_ROOT:-"${HOME}/.virtualenvs/boomer"}
 
 # create virtualenv, consistent with virtualenv-wrapper conventions
 if [ ! -d ${VIRTUALENV_ROOT} ]; then

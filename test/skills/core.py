@@ -2,9 +2,9 @@ import unittest
 from re import error
 from os.path import join, dirname, abspath
 
-from mycroft.skills.core import load_regex_from_file, load_regex, \
+from boomer.skills.core import load_regex_from_file, load_regex, \
     load_vocab_from_file, load_vocabulary
-from mycroft.util.log import getLogger
+from boomer.util.log import getLogger
 
 __author__ = 'eward'
 logger = getLogger(__name__)
@@ -29,7 +29,7 @@ class MockEmitter(object):
         self.results = []
 
 
-class MycroftSkillTest(unittest.TestCase):
+class BoomerSkillTest(unittest.TestCase):
     emitter = MockEmitter()
     regex_path = abspath(join(dirname(__file__), '../regex_test'))
     vocab_path = abspath(join(dirname(__file__), '../vocab_test'))
