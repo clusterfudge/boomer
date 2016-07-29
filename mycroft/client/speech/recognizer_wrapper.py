@@ -16,16 +16,8 @@
 # along with Mycroft Core.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import json
-
-import requests
-from speech_recognition import UnknownValueError
-
 from mycroft.configuration import ConfigurationManager
-from mycroft.identity import IdentityManager
-from mycroft.metrics import Stopwatch
 from mycroft.util.log import getLogger
-from mycroft.util.setup_base import get_version
 
 __author__ = 'seanfitz'
 
