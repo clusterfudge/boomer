@@ -1,7 +1,8 @@
 Mycroft [![Build Status](https://travis-ci.org/clusterfudge/mycroft-core.svg?branch=master)](https://travis-ci.org/clusterfudge/mycroft-core)
 ==========
 
-NOTE: This is a fork
+NOTE: This is a fork of [MycroftAI](https://github.com/MycroftAI)/[mycroft-core](https://github.com/MycroftAI/mycroft-core).
+It has diverged in ways that the core will not be compatible going forward, but for the time being skill using the skils-sdk and skills-container should still function as expected.
 
 # Getting Started in Ubuntu - Development Environment
 - run `build_host_setup.sh` (installs debian packages with apt-get, please read it) 
