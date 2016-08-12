@@ -40,7 +40,7 @@ python_package skills-sdk-setup.py
 
 # build distributable virtualenv
 ARCH="$(dpkg --print-architecture)"
-SYSTEM_TARGET="/usr/local/"
+SYSTEM_TARGET="/opt/mycroft/"
 ARTIFACT_BASE="boomer-core-${ARCH}-${VERSION}"
 MYCROFT_ARTIFACT_DIR=${TOP}/build/${ARTIFACT_BASE}
 
@@ -127,10 +127,6 @@ setup_init_script "boomer-messagebus"
 setup_init_script "boomer-skills"
 setup_init_script "boomer-speech-client"
 
-if [ ${ARCH} = "armhf" ]; then
-  setup_init_script "boomer-enclosure-client"
-fi
-
 mkdir -p ${DEB_DIR}/${SYSTEM_TARGET}
 cp -rf ${TOP}/build/${ARTIFACT_BASE}/* ${DEB_DIR}/${SYSTEM_TARGET}
 
@@ -143,13 +139,6 @@ mimic.path = "/usr/local/bin/mimic"
 mimic.voice = "ap"
 
 EOM
-
-#if [ ${ARCH} = "armhf" ]; then
-  # ensures enclosure version
-ENCLOSURE_DIR=${DEB_DIR}/opt
-mkdir -p ${ENCLOSURE_DIR}
-cp ${TOP}/boomer/client/enclosure/version.txt ${ENCLOSURE_DIR}/enclosure-version.txt
-#fi
 
 cd $(dirname ${DEB_DIR})
 dpkg-deb --build ${DEB_BASE}

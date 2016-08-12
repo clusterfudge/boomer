@@ -4,6 +4,6 @@ Section: base
 Priority: optional
 Architecture: %%ARCHITECTURE%%
 Depends: %%DEPENDS%%
-Maintainer: Arron Atchison <arron.atchison@boomer.ai>
+Maintainer: Sean Fitzgerald <boomer@fitzgeralds.me>
 Description: %%DESCRIPTION%%
 
