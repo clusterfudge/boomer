@@ -32,4 +32,5 @@ pyjokes==0.5.0
 psutil==4.1.0
 pep8==1.7.0
 multi_key_dict==2.0.3
+pocketsphinx==0.1.0
 git+https://github.com/clusterfudge/adapt.git@v0.2.7#egg=adapt-parser
