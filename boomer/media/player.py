@@ -1,9 +1,10 @@
-import threading
-
-__author__ = "seanfitz"
 import signal
 import subprocess
 import os
+import threading
+import pyee
+
+__author__ = "seanfitz"
 
 
 class Media(object):
@@ -12,8 +13,9 @@ class Media(object):
         self.media_type = media_type
 
 
-class MediaPlayer(object):
+class MediaPlayer(pyee.EventEmitter):
     def __init__(self):
+        pyee.EventEmitter.__init__(self)
         self.playlist = []
         self.playlist_position = 0
         self.loop = False
@@ -21,9 +23,10 @@ class MediaPlayer(object):
         self.paused = False
 
     def stop(self):
-        self.player.stop()
+        self.player_stop()
         self.clear_playlist()
         self.playing = False
+        self.paused = False
 
     def play(self, media_uri=None, media_type=None):
         if media_uri:
@@ -31,7 +34,7 @@ class MediaPlayer(object):
                 self.player_stop()
             self.clear_playlist()
             self.queue_media(media_uri, media_type)
-            self.player_play()
+            self.start_playlist()
         elif self.playing and self.paused:
             self.player_resume()
         elif not self.playing:
@@ -43,18 +46,23 @@ class MediaPlayer(object):
 
         def target(player):
             while player.playing and player.playlist_position < len(player.playlist):
+                player.emit('track_start')
                 player.player_play(player.playlist[player.playlist_position])
-                player.player_play(player.playlist[player.playlist_position])
+                player.emit('track_end')
                 player.playlist_position += 1
                 if player.playlist_position == len(player.playlist) and player.loop:
                     player.playlist_position = 0
-
-        threading.Thread(target, self).start()
+        self.playing = True
+        self.paused = False
+        threading.Thread(target=target, args=(self,)).start()
 
     def pause(self):
         if self.playing and not self.paused:
             self.player_pause()
             self.paused = True
+        elif self.playing and self.paused:
+            self.player_resume()
+            self.paused = False
 
     def queue_media(self, media_uri, media_type=None):
         self.playlist.append(Media(media_uri, media_type))
@@ -83,11 +91,11 @@ class MediaPlayer(object):
 
 class FFPlayMediaPlayer(MediaPlayer):
     def __init__(self):
-        super(FFPlayMediaPlayer).__init__(self)
+        MediaPlayer.__init__(self)
         self.process = None
 
     def player_play(self, media):
-        self.process = subprocess.Popen(['ffplay', media.media_uri],
+        self.process = subprocess.Popen(['ffplay', '-nodisp', media.media_uri],
                                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     def player_resume(self):
