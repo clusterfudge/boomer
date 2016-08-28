@@ -36,7 +36,6 @@ class PandoraSkill(MediaSkill):
 
     def initialize(self):
         if not self.config.get('user') or not self.config.get('pass'):
-            log.info("No pandora credentials.")
             return
 
         self.pandora = pandora.Pandora(connection=pandora.connection.PandoraConnection())

@@ -159,7 +159,7 @@ class BoomerSkill(object):
         self.name = name
         self.bind(emitter)
         config = ConfigurationManager.get()
-        self.config = config.get(name)
+        self.config = config.get(name, {})
         self.config_core = config.get('core')
         self.dialog_renderer = None
         self.file_system = FileSystemAccess(join('skills', name))
