@@ -4,12 +4,12 @@ import unittest
 from os.path import dirname
 from xmlrunner import XMLTestRunner
 
-from boomer.configuration import ConfigurationManager
+from boomer.configuration import ConfigurationManager, DEFAULT_CONFIG
 
 __author__ = 'seanfitz, jdorleans'
 if __name__ == "__main__":
     fail_on_error = "--fail-on-error" in sys.argv
-    ConfigurationManager.load_local(['boomer.ini'])
+    ConfigurationManager.get([DEFAULT_CONFIG, 'boomer.ini'])
 
     tests = unittest.TestLoader().discover(dirname(__file__), "*.py")
     runner = XMLTestRunner("./build/report/tests")

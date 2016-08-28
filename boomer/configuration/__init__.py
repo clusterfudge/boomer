@@ -40,36 +40,12 @@ class ConfigurationLoader(object):
     """
 
     @staticmethod
-    def init_config(config=None):
-        if not config:
-            return {}
-        return config
-
-    @staticmethod
-    def init_locations(locations=None, keep_user_config=True):
-        if not locations:
-            locations = [DEFAULT_CONFIG, SYSTEM_CONFIG, USER_CONFIG]
-        elif keep_user_config:
-            locations += [USER_CONFIG]
-        return locations
-
-    @staticmethod
-    def validate_data(config=None, locations=None):
-        if not (isinstance(config, dict) and isinstance(locations, list)):
-            logger.error("Invalid configuration data type.")
-            logger.error("Locations: %s" % locations)
-            logger.error("Configuration: %s" % config)
-            raise TypeError
-
-    @staticmethod
-    def load(config=None, locations=None, keep_user_config=True):
+    def load(locations=None):
         """
         Loads default or specified configuration files
         """
-        config = ConfigurationLoader.init_config(config)
-        locations = ConfigurationLoader.init_locations(locations,
-                                                       keep_user_config)
-        ConfigurationLoader.validate_data(config, locations)
+        config = {}
+        locations = locations or [DEFAULT_CONFIG, SYSTEM_CONFIG, USER_CONFIG]
 
         for location in locations:
             config = ConfigurationLoader.__load(config, location)
@@ -106,15 +82,6 @@ class ConfigurationManager(object):
     """
     __config = None
 
-    @staticmethod
-    def load_defaults():
-        ConfigurationManager.__config = ConfigurationLoader.load()
-        return ConfigurationManager.__config
-
-    @staticmethod
-    def load_local(locations=None, keep_user_config=True):
-        return ConfigurationLoader.load(ConfigurationManager.get(), locations,
-                                        keep_user_config)
 
     @staticmethod
     def get(locations=None):
@@ -124,9 +91,6 @@ class ConfigurationManager(object):
         :return: A dictionary representing Boomer configuration.
         """
         if not ConfigurationManager.__config:
-            ConfigurationManager.load_defaults()
-
-        if locations:
-            ConfigurationManager.load_local(locations)
+            ConfigurationManager.__config = ConfigurationLoader.load(locations)
 
         return ConfigurationManager.__config
