@@ -46,9 +46,10 @@ class MediaPlayer(pyee.EventEmitter):
 
         def target(player):
             while player.playing and player.playlist_position < len(player.playlist):
-                player.emit('track_start')
-                player.player_play(player.playlist[player.playlist_position])
-                player.emit('track_end')
+                media = player.playlist[player.playlist_position]
+                player.emit('track_start', media)
+                player.player_play(media)
+                player.emit('track_end', media)
                 player.playlist_position += 1
                 if player.playlist_position == len(player.playlist) and player.loop:
                     player.playlist_position = 0

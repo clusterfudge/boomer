@@ -8,6 +8,9 @@ from pandora.connection import PandoraConnection
 
 from boomer.media.player import FFPlayMediaPlayer
 from boomer.skills.media import MediaSkill
+from boomer.util.log import getLogger
+
+log = getLogger("PandoraSkill")
 
 
 class PandoraSkill(MediaSkill):
@@ -22,7 +25,7 @@ class PandoraSkill(MediaSkill):
     def ensure_connected(self):
         try:
             stations = self.pandora.connection.get_stations(self.pandora.user)
-            if len(stations) == 0:
+            if not stations or len(stations) == 0:
                 raise Exception("Authentication expired, no stations listed.")
         except Exception, e:
             print("Exception occurred ensuring pandora_music connection: %s" % repr(e))
@@ -32,6 +35,10 @@ class PandoraSkill(MediaSkill):
         return self.pandora
 
     def initialize(self):
+        if not self.config.get('user') or not self.config.get('pass'):
+            log.info("No pandora credentials.")
+            return
+
         self.pandora = pandora.Pandora(connection=pandora.connection.PandoraConnection())
 
         # setup intents
@@ -49,8 +56,7 @@ class PandoraSkill(MediaSkill):
         self.register_intent(play_music_command, self.handle_select_station)
 
         self.register_stations()
-        self.load_vocab_files(join(dirname(__file__), 'vocab', self.lang))
-        self.load_regex_files(join(dirname(__file__), 'regex', self.lang))
+        self.load_data_files(join(dirname(__file__)))
 
     def register_stations(self):
         station_name_regex = re.compile(r"(.*) Radio")
