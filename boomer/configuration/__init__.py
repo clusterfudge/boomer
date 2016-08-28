@@ -82,7 +82,6 @@ class ConfigurationManager(object):
     """
     __config = None
 
-
     @staticmethod
     def get(locations=None):
         """
