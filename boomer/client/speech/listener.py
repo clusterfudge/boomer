@@ -160,15 +160,16 @@ class AudioConsumer(threading.Thread):
     def transcribe(self, audio_segments):
         utterances = []
         threads = []
+        logger.debug("Creating remote stt runnable for %d audio segments" % (len(audio_segments)))
         for audio in audio_segments:
             if self._audio_length(audio) < self.MIN_AUDIO_SIZE:
                 logger.debug("Audio too short to send to STT")
                 continue
-
             target = self._create_remote_stt_runnable(audio, utterances)
             t = threading.Thread(target=target)
             t.start()
             threads.append(t)
+        logger.debug("Created remote stt runable for %d audio segments" % (len(threads)))
 
         for thread in threads:
             thread.join()
