@@ -35,9 +35,6 @@ class PandoraSkill(MediaSkill):
         return self.pandora
 
     def initialize(self):
-        if not self.config.get('user') or not self.config.get('pass'):
-            return
-
         self.pandora = pandora.Pandora(connection=pandora.connection.PandoraConnection())
 
         # setup intents
@@ -54,8 +51,12 @@ class PandoraSkill(MediaSkill):
             .build()
         self.register_intent(play_music_command, self.handle_select_station)
 
-        self.register_stations()
         self.load_data_files(join(dirname(__file__)))
+
+        if not self.config.get('user') or not self.config.get('pass'):
+            return
+
+        self.register_stations()
 
     def register_stations(self):
         station_name_regex = re.compile(r"(.*) Radio")
@@ -78,6 +79,7 @@ class PandoraSkill(MediaSkill):
         station = self.station_map.get(message.metadata.get('PandoraStation'))
         p.switch_station(station)
         next_song = p.get_next_song()
+        self.speak_dialog("now.playing.playlist")
         self.player.play(media_uri=next_song['audioUrlMap']['highQuality']['audioUrl'])
 
     def handle_pause(self, message):
