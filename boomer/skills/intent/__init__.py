@@ -53,9 +53,10 @@ class IntentSkill(BoomerSkill):
                     utterance, num_results=100):
                 metrics.increment("intents.count")
                 intent['utterance'] = utterance
-                best_confidence = best_intent.get('confidence')
-                cur_confidence = intent.get('confidence')
-                if not best_intent or best_confidence > cur_confidence:
+                best_confidence = best_intent.get('confidence') \
+                    if best_intent else 0.0
+                cur_confidence = intent.get('confidence', 0.0)
+                if best_confidence < cur_confidence:
                     best_intent = intent
 
         if best_intent and best_intent.get('confidence', 0.0) > 0.0:
