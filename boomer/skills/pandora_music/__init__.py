@@ -12,6 +12,9 @@ from boomer.util.log import getLogger
 
 log = getLogger("PandoraSkill")
 
+FAILED_AUTH_ERR_MSG = "Could not authenticate to pandora_music for user %s"
+EXPIRED_AUTH_MSG = "Exception occurred ensuring pandora_music connection: %s"
+
 
 class PandoraSkill(MediaSkill):
     def __init__(self):
@@ -28,14 +31,16 @@ class PandoraSkill(MediaSkill):
             if not stations or len(stations) == 0:
                 raise Exception("Authentication expired, no stations listed.")
         except Exception, e:
-            print("Exception occurred ensuring pandora_music connection: %s" % repr(e))
+            print(EXPIRED_AUTH_MSG % repr(e))
             self.pandora = pandora.Pandora(connection=PandoraConnection())
-            if not self.pandora.authenticate(self.config.get('user'), self.config.get('pass')):
-                raise Exception("Could not authenticate to pandora_music for user %s" % self.config.get('user'))
+            authenticated = self.pandora\
+                .authenticate(self.config.get('user'), self.config.get('pass'))
+            if not authenticated:
+                raise Exception(FAILED_AUTH_ERR_MSG % self.config.get('user'))
         return self.pandora
 
     def initialize(self):
-        self.pandora = pandora.Pandora(connection=pandora.connection.PandoraConnection())
+        self.pandora = pandora.Pandora(connection=PandoraConnection())
 
         # setup intents
         list_stations_intent = IntentBuilder('pandoralist_stations')\
@@ -80,7 +85,8 @@ class PandoraSkill(MediaSkill):
         p.switch_station(station)
         next_song = p.get_next_song()
         self.speak_dialog("now.playing.playlist")
-        self.player.play(media_uri=next_song['audioUrlMap']['highQuality']['audioUrl'])
+        self.player.play(
+            media_uri=next_song['audioUrlMap']['highQuality']['audioUrl'])
 
     def handle_pause(self, message):
         self.player.pause()
@@ -91,9 +97,8 @@ class PandoraSkill(MediaSkill):
     def next_track(self):
         p = self.ensure_connected()
         next_song = p.get_next_song()
-        self.player.play(media_uri=next_song['audioUrlMap']['highQuality']['audioUrl'])
-
-
+        self.player.play(
+            media_uri=next_song['audioUrlMap']['highQuality']['audioUrl'])
 
 
 def create_skill():

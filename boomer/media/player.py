@@ -45,13 +45,15 @@ class MediaPlayer(pyee.EventEmitter):
     def start_playlist(self):
 
         def target(player):
-            while player.playing and player.playlist_position < len(player.playlist):
+            while player.playing \
+                    and player.playlist_position < len(player.playlist):
                 media = player.playlist[player.playlist_position]
                 player.emit('track_start', media)
                 player.player_play(media)
                 player.emit('track_end', media)
                 player.playlist_position += 1
-                if player.playlist_position == len(player.playlist) and player.loop:
+                if player.playlist_position == len(player.playlist) \
+                        and player.loop:
                     player.playlist_position = 0
         self.playing = True
         self.paused = False
@@ -96,8 +98,9 @@ class FFPlayMediaPlayer(MediaPlayer):
         self.process = None
 
     def player_play(self, media):
-        self.process = subprocess.Popen(['ffplay', '-nodisp', media.media_uri],
-                                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        self.process = \
+            subprocess.Popen(['ffplay', '-nodisp', media.media_uri],
+                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     def player_resume(self):
         os.kill(self.process.pid, signal.SIGCONT)
@@ -107,6 +110,3 @@ class FFPlayMediaPlayer(MediaPlayer):
 
     def player_pause(self):
         os.kill(self.process.pid, signal.SIGSTOP)
-
-
-

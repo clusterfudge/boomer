@@ -9,15 +9,17 @@ from boomer.media.player import FFPlayMediaPlayer
 class MockMediaPlayer(FFPlayMediaPlayer):
     """
     MockMediaPlayer
-    takes pretend Media, uses the media_type as a way to sneak instructions into the mock player (like how long to wait)
+    takes pretend Media, uses the media_type as a way to sneak
+    instructions into the mock player (like how long to wait)
     """
     def __init__(self):
         FFPlayMediaPlayer.__init__(self)
 
     def player_play(self, media):
         sleep_time = media.media_type.get('time_s')
-        self.process = subprocess.Popen(['sleep', str(sleep_time)], shell=True,
-                                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        self.process = \
+            subprocess.Popen(['sleep', str(sleep_time)], shell=True,
+                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
 class MediaPlayerTests(unittest.TestCase):
