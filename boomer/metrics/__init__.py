@@ -17,14 +17,9 @@
 
 
 import json
-import threading
 import time
-import requests
 
-from boomer.util import str2bool
 from boomer.util.log import getLogger
-from boomer.configuration import ConfigurationManager
-from boomer.session import SessionManager
 from boomer.util.setup_base import get_version
 
 metrics_log = getLogger("METRICS")

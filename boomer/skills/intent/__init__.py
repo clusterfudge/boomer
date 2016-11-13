@@ -18,6 +18,7 @@
 
 from adapt.engine import IntentDeterminationEngine
 from boomer.messagebus.message import Message
+from boomer.metrics import MetricsAggregator, Stopwatch
 from boomer.skills.core import open_intent_envelope, BoomerSkill
 from boomer.util.log import getLogger
 
@@ -38,18 +39,22 @@ class IntentSkill(BoomerSkill):
         self.emitter.on('detach_intent', self.handle_detach_intent)
 
     def handle_utterance(self, message):
+        timer = Stopwatch()
+        timer.start()
+
+        metrics = MetricsAggregator()
         utterances = message.metadata.get('utterances', '')
 
         best_intent = None
+
         for utterance in utterances:
-            try:
-                best_intent = next(self.engine.determine_intent(
-                    utterance, num_results=100))
-                # TODO - Should Adapt handle this?
-                best_intent['utterance'] = utterance
-            except StopIteration, e:
-                logger.exception(e)
-                continue
+            metrics.increment("utterances.count")
+            for intent in self.engine.determine_intent(
+                    utterance, num_results=100):
+                metrics.increment("intents.count")
+                intent['utterance'] = utterance
+                if not best_intent or best_intent.get('confidence') < intent.get('confidence'):
+                    best_intent = intent
 
         if best_intent and best_intent.get('confidence', 0.0) > 0.0:
             reply = message.reply(
@@ -63,6 +68,8 @@ class IntentSkill(BoomerSkill):
             self.emitter.emit(
                 Message("multi_utterance_intent_failure",
                         metadata={"utterances": utterances}))
+        metrics.timer("parse.time", timer.stop())
+        metrics.flush()
 
     def handle_register_vocab(self, message):
         start_concept = message.metadata.get('start')
