@@ -67,7 +67,7 @@ class LocalRecognizer(object):
             metrics.timer("boomer.stt.local.time_s", time.time() - start)
         return self.decoder.hyp()
 
-    def is_recognized(self, byte_data, metrics):
+    def is_recognized(self, byte_data, metrics, min_confidence=0.0):
         hyp = self.transcribe(byte_data, metrics)
         return hyp and self.key_phrase in hyp.hypstr.lower()
 

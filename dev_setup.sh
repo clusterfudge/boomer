@@ -50,9 +50,5 @@ pip install -r requirements.txt
 CORES=$(nproc)
 echo Building with $CORES cores.
 
-#build and install mimic
-cd ${TOP}
-${TOP}/install-mimic.sh
-
 # install pygtk for desktop_launcher skill
 ${TOP}/install-pygtk.sh

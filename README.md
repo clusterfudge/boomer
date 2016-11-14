@@ -105,3 +105,7 @@ source ~/.virtualenvs/boomer/bin/activate
 #### When running boomer, I get the error `boomer.messagebus.client.ws - ERROR - Exception("Uncaught 'error' event.",)`
 
 This means that you are not running the `./start.sh service` process. In order to fully run Boomer, you must run `./start.sh service`, `./start.sh skills`, and `./start.sh voice`/`./start.sh cli` all at the same time. This can be done using different terminal windows, or by using the included `./boomer.sh start`, which runs all four process using `screen`.
+
+# eSpeak Voices
+eSpeak defaults are not fantastic. Find the mbrola instructions for your distribution for higher quality speech.
+

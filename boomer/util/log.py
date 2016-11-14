@@ -20,9 +20,16 @@ import logging
 __author__ = 'seanfitz'
 
 FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-logging.basicConfig(format=FORMAT, level=logging.DEBUG)
+LEVEL = logging.DEBUG
+logging.basicConfig(format=FORMAT, level=LEVEL)
 logger = logging.getLogger("BOOMER")
-logger.setLevel(logging.DEBUG)
+
+
+def setLogLevel(level):
+    logging.basicConfig(format=FORMAT, level=level)
+    logger.setLevel(level)
+    global LEVEL
+    LEVEL = level
 
 
 def getLogger(name="BOOMER"):
@@ -33,4 +40,6 @@ def getLogger(name="BOOMER"):
 
     :return: an instance of logging.Logger
     """
-    return logging.getLogger(name)
+    l = logging.getLogger(name)
+    l.setLevel(LEVEL)
+    return l

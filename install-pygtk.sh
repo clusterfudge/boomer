@@ -1,3 +1,4 @@
+#!/bin/bash -x
 # Ensure we're in a virtualenv.
 if [ "$VIRTUAL_ENV" == "" ]
 then
