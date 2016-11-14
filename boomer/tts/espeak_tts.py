@@ -30,8 +30,14 @@ class ESpeak(TTS):
         super(ESpeak, self).__init__(lang, voice)
 
     def execute(self, sentence):
+        voice_parts = []
+        if self.lang and len(self.lang.strip()) > 0:
+            voice_parts.append(self.lang)
+        if self.voice and len(self.voice.strip()) > 0:
+            voice_parts.append(self.voice)
+        print voice_parts
         subprocess.call(
-            ['espeak', '-v', self.lang + '+' + self.voice, sentence])
+            ['espeak', '-v', '+'.join(voice_parts), '-s', '140', sentence])
 
 
 class ESpeakValidator(TTSValidator):
