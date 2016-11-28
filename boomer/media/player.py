@@ -108,9 +108,10 @@ class FFPlayMediaPlayer(MediaPlayer):
         self.should_signal = True
         try:
             self.process = \
-                subprocess.Popen(['ffplay', '-nodisp', '-autoexit', media.media_uri],
-                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                 stdin=subprocess.PIPE)
+                subprocess.Popen(
+                    ['ffplay', '-nodisp', '-autoexit', media.media_uri],
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                    stdin=subprocess.PIPE)
             self.process.communicate()
             return self.should_signal
         except OSError, e:
@@ -133,7 +134,7 @@ class FFPlayMediaPlayer(MediaPlayer):
             try:
                 os.kill(self.process.pid, signal.SIGKILL)
             except OSError, e:
-                if e.errno != 3: # no such pid
+                if e.errno != 3:  # no such pid
                     raise e
 
     def player_pause(self):

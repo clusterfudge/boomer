@@ -77,7 +77,8 @@ class PandoraSkill(MediaSkill):
 
     def handle_list_stations(self, message):
         p = self.ensure_connected()
-        self.emitter.emit(message.reply('pandora:stations', metadata=p.stations))
+        self.emitter.emit(
+            message.reply('pandora:stations', metadata=p.stations))
 
     def handle_select_station(self, message):
         p = self.ensure_connected()
