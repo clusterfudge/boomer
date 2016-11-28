@@ -9,6 +9,7 @@ sudo apt-get install -y \
     python-virtualenv \
     python-gobject-dev \
     virtualenvwrapper \
+    ffmpeg \
     libtool \
     libffi-dev \
     libssl-dev \

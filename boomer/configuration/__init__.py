@@ -16,16 +16,12 @@
 # Forked from Mycroft Core on 2017-07-29
 import collections
 
-import requests
 from configobj import ConfigObj
 from genericpath import exists, isfile
 from os.path import join, dirname, expanduser
-
-from boomer.identity import IdentityManager
-from boomer.util import str2bool
 from boomer.util.log import getLogger
 
-__author__ = 'seanfitz, jdorleans'
+__author__ = 'seanfitz'
 
 logger = getLogger(__name__)
 

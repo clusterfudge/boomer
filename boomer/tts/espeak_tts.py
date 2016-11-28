@@ -35,7 +35,6 @@ class ESpeak(TTS):
             voice_parts.append(self.lang)
         if self.voice and len(self.voice.strip()) > 0:
             voice_parts.append(self.voice)
-        print voice_parts
         subprocess.call(
             ['espeak', '-v', '+'.join(voice_parts), '-s', '140', sentence])
 
