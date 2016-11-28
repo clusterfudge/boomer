@@ -23,10 +23,10 @@ class MediaPlayer(pyee.EventEmitter):
         self.paused = False
 
     def stop(self):
-        self.player_stop()
         self.clear_playlist()
         self.playing = False
         self.paused = False
+        self.player_stop()
 
     def play(self, media_uri=None, media_type=None):
         if media_uri:
@@ -49,15 +49,20 @@ class MediaPlayer(pyee.EventEmitter):
                     and player.playlist_position < len(player.playlist):
                 media = player.playlist[player.playlist_position]
                 player.emit('track_start', media)
-                player.player_play(media)
-                player.emit('track_end', media)
+                should_signal = player.player_play(media)
+                if should_signal:
+                    player.emit('track_end', media)
                 player.playlist_position += 1
                 if player.playlist_position == len(player.playlist) \
                         and player.loop:
                     player.playlist_position = 0
+            player.playing = False
+
         self.playing = True
         self.paused = False
-        threading.Thread(target=target, args=(self,)).start()
+        thread = threading.Thread(target=target, args=(self,))
+        thread.daemon = False
+        thread.start()
 
     def pause(self):
         if self.playing and not self.paused:
@@ -72,6 +77,7 @@ class MediaPlayer(pyee.EventEmitter):
 
     def clear_playlist(self):
         self.playlist = []
+        self.playlist_position = 0
 
     def loop(self):
         self.loop = not self.loop
@@ -96,17 +102,40 @@ class FFPlayMediaPlayer(MediaPlayer):
     def __init__(self):
         MediaPlayer.__init__(self)
         self.process = None
+        self.should_signal = True
 
     def player_play(self, media):
-        self.process = \
-            subprocess.Popen(['ffplay', '-nodisp', media.media_uri],
-                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        self.should_signal = True
+        try:
+            self.process = \
+                subprocess.Popen(['ffplay', '-nodisp', '-autoexit', media.media_uri],
+                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                 stdin=subprocess.PIPE)
+            self.process.communicate()
+            return self.should_signal
+        except OSError, e:
+            if e.errno == signal.SIGTERM:
+                self.should_signal = False
+
+            return self.should_signal
+
+        finally:
+            self.process = None
+            self.should_signal = True
 
     def player_resume(self):
-        os.kill(self.process.pid, signal.SIGCONT)
+        if self.process:
+            os.kill(self.process.pid, signal.SIGCONT)
 
     def player_stop(self):
-        os.kill(self.process.pid, signal.SIGKILL)
+        if self.process:
+            self.should_signal = False
+            try:
+                os.kill(self.process.pid, signal.SIGKILL)
+            except OSError, e:
+                if e.errno != 3: # no such pid
+                    raise e
 
     def player_pause(self):
-        os.kill(self.process.pid, signal.SIGSTOP)
+        if self.process:
+            os.kill(self.process.pid, signal.SIGSTOP)

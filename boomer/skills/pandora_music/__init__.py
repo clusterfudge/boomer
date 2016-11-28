@@ -23,7 +23,7 @@ class PandoraSkill(MediaSkill):
         self.process = None
         self.station_map = {}
         self.player = FFPlayMediaPlayer()
-        self.player.on('track_end', self.next_track)
+        self.player.on('track_end', self.handle_next)
 
     def ensure_connected(self):
         try:
@@ -62,6 +62,7 @@ class PandoraSkill(MediaSkill):
             return
 
         self.register_stations()
+        MediaSkill.initialize(self)
 
     def register_stations(self):
         station_name_regex = re.compile(r"(.*) Radio")
@@ -74,17 +75,19 @@ class PandoraSkill(MediaSkill):
                 self.register_vocabulary(match, 'PandoraStation')
                 self.station_map[match] = station
 
-    def handle_list_stations(self, messsage):
+    def handle_list_stations(self, message):
         p = self.ensure_connected()
-        station = [s for s in p.stations if s.get('stationName')][0]
-        pass
+        self.emitter.emit(message.reply('pandora:stations', metadata=p.stations))
 
     def handle_select_station(self, message):
         p = self.ensure_connected()
         station = self.station_map.get(message.metadata.get('PandoraStation'))
-        p.switch_station(station)
+        try:
+            p.switch_station(station)
+        except Exception, e:
+            print(repr(e))
         next_song = p.get_next_song()
-        self.speak_dialog("now.playing.playlist")
+        self.speak_dialog("now.playing.playlist", station)
         self.player.play(
             media_uri=next_song['audioUrlMap']['highQuality']['audioUrl'])
 
@@ -94,11 +97,15 @@ class PandoraSkill(MediaSkill):
     def handle_play(self, message):
         self.player.play()
 
-    def next_track(self):
-        p = self.ensure_connected()
-        next_song = p.get_next_song()
-        self.player.play(
-            media_uri=next_song['audioUrlMap']['highQuality']['audioUrl'])
+    def handle_next(self, prev_track):
+        if self.player.playing:
+            p = self.ensure_connected()
+            next_song = p.get_next_song()
+            self.player.play(
+                media_uri=next_song['audioUrlMap']['highQuality']['audioUrl'])
+
+    def stop(self):
+        self.player.stop()
 
 
 def create_skill():

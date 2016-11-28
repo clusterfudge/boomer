@@ -124,7 +124,7 @@ class MediaSkill(BoomerSkill):
         """
            stop() should be implemented to stop currently playing media. This
            function will be called by either the general boomer 'stop'
-           functionallity or internal message bus communication.
+           functionality or internal message bus communication.
         """
         logger.debug('Stop not implemented in ' + self.name)
 

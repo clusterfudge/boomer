@@ -1,6 +1,5 @@
 import unittest
 import subprocess
-
 import time
 
 from boomer.media.player import FFPlayMediaPlayer
@@ -20,6 +19,8 @@ class MockMediaPlayer(FFPlayMediaPlayer):
         self.process = \
             subprocess.Popen(['sleep', str(sleep_time)], shell=True,
                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        self.process.wait()
+        return True
 
 
 class MediaPlayerTests(unittest.TestCase):
@@ -45,5 +46,5 @@ class MediaPlayerTests(unittest.TestCase):
         self.player.play('test1', {'time_s': 1})
         time.sleep(1)
 
-        self.assertEqual(events.get('track_start').media_uri, 'test1')
-        self.assertEqual(events.get('track_end').media_uri, 'test1')
+        self.assertEqual('test1', events.get('track_start').media_uri)
+        self.assertEqual('test1', events.get('track_end').media_uri)
