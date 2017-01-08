@@ -49,11 +49,11 @@ class SendSMSSkill(BoomerSkill):
 
     def handle_intent(self, message):
         try:
-            contact = message.metadata.get("Contact").lower()
+            contact = message.data.get("Contact").lower()
 
             if contact in self.contacts:
                 number = self.contacts.get(contact)
-                msg = message.metadata.get("Message")
+                msg = message.data.get("Message")
                 self.__send_sms(number, msg)
                 self.__notify(contact, number, msg)
 
@@ -71,7 +71,7 @@ class SendSMSSkill(BoomerSkill):
         self.emitter.emit(
             Message(
                 "send_sms",
-                metadata={'contact': contact, 'number': number,
+                data={'contact': contact, 'number': number,
                           'message': msg}))
 
     def stop(self):

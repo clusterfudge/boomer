@@ -55,7 +55,7 @@ class WikipediaSkill(BoomerSkill):
 
     def handle_intent(self, message):
         try:
-            title = message.metadata.get("ArticleTitle")
+            title = message.data.get("ArticleTitle")
             self.__feedback_search(title)
             results = wiki.search(title, self.max_results)
             summary = re.sub(

@@ -43,7 +43,7 @@ class EnclosureAPI:
 
     def system_blink(self, times):
         self.client.emit(
-            Message("enclosure.system.blink", metadata={'times': times}))
+            Message("enclosure.system.blink", data={'times': times}))
 
     def eyes_on(self):
         self.client.emit(Message("enclosure.eyes.on"))
@@ -53,22 +53,22 @@ class EnclosureAPI:
 
     def eyes_blink(self, side):
         self.client.emit(
-            Message("enclosure.eyes.blink", metadata={'side': side}))
+            Message("enclosure.eyes.blink", data={'side': side}))
 
     def eyes_narrow(self):
         self.client.emit(Message("enclosure.eyes.narrow"))
 
     def eyes_look(self, side):
         self.client.emit(
-            Message("enclosure.eyes.look", metadata={'side': side}))
+            Message("enclosure.eyes.look", data={'side': side}))
 
     def eyes_color(self, r=255, g=255, b=255):
         self.client.emit(
-            Message("enclosure.eyes.color", metadata={'r': r, 'g': g, 'b': b}))
+            Message("enclosure.eyes.color", data={'r': r, 'g': g, 'b': b}))
 
     def eyes_brightness(self, level=30):
         self.client.emit(
-            Message("enclosure.eyes.level", metadata={'level': level}))
+            Message("enclosure.eyes.level", data={'level': level}))
 
     def mouth_reset(self):
         self.client.emit(Message("enclosure.mouth.reset"))
@@ -87,13 +87,13 @@ class EnclosureAPI:
 
     def mouth_text(self, text=""):
         self.client.emit(
-            Message("enclosure.mouth.text", metadata={'text': text}))
+            Message("enclosure.mouth.text", data={'text': text}))
 
     def weather_display(self, img_code, temp):
         self.client.emit(
-            Message("enclosure.weather.display", metadata={
+            Message("enclosure.weather.display", data={
                    'img_code': img_code, 'temp': temp}))
 
     def activate_mouth_listeners(self, active):
-        msg = Message('enclosure.mouth.listeners', metadata={'active': active})
+        msg = Message('enclosure.mouth.listeners', data={'active': active})
         self.client.emit(msg)

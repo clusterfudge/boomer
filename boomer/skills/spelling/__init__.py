@@ -43,7 +43,7 @@ class SpellingSkill(BoomerSkill):
         self.register_intent(intent, self.handle_intent)
 
     def handle_intent(self, message):
-        word = message.metadata.get("Word")
+        word = message.data.get("Word")
         self.emitter.once("recognizer_loop:audio_output_start",
                           self.enclosure.mouth_text(word))
         spelled_word = ', '.join(word).lower()

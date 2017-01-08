@@ -43,7 +43,7 @@ class IntentSkill(BoomerSkill):
         timer.start()
 
         metrics = MetricsAggregator()
-        utterances = message.metadata.get('utterances', '')
+        utterances = message.data.get('utterances', '')
 
         best_intent = None
 
@@ -61,24 +61,24 @@ class IntentSkill(BoomerSkill):
 
         if best_intent and best_intent.get('confidence', 0.0) > 0.0:
             reply = message.reply(
-                best_intent.get('intent_type'), metadata=best_intent)
+                best_intent.get('intent_type'), data=best_intent)
             self.emitter.emit(reply)
         elif len(utterances) == 1:
             self.emitter.emit(
                 Message("intent_failure",
-                        metadata={"utterance": utterances[0]}))
+                        data={"utterance": utterances[0]}))
         else:
             self.emitter.emit(
                 Message("multi_utterance_intent_failure",
-                        metadata={"utterances": utterances}))
+                        data={"utterances": utterances}))
         metrics.timer("parse.time", timer.stop())
         metrics.flush()
 
     def handle_register_vocab(self, message):
-        start_concept = message.metadata.get('start')
-        end_concept = message.metadata.get('end')
-        regex_str = message.metadata.get('regex')
-        alias_of = message.metadata.get('alias_of')
+        start_concept = message.data.get('start')
+        end_concept = message.data.get('end')
+        regex_str = message.data.get('regex')
+        alias_of = message.data.get('alias_of')
         if regex_str:
             self.engine.register_regex_entity(regex_str)
         else:
@@ -90,7 +90,7 @@ class IntentSkill(BoomerSkill):
         self.engine.register_intent_parser(intent)
 
     def handle_detach_intent(self, message):
-        intent_name = message.metadata.get('intent_name')
+        intent_name = message.data.get('intent_name')
         new_parsers = [
             p for p in self.engine.intent_parsers if p.name != intent_name]
         self.engine.intent_parsers = new_parsers

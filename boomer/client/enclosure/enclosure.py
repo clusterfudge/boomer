@@ -178,8 +178,8 @@ class Enclosure:
         self.__register_mouth_events()
 
     def __mouth_listeners(self, event=None):
-        if event and event.metadata:
-            active = event.metadata['active']
+        if event and event.data:
+            active = event.data['active']
             if active:
                 self.__register_mouth_events()
             else:
@@ -200,8 +200,8 @@ class Enclosure:
                            self.mouth.reset)
 
     def __update_events(self, event=None):
-        if event and event.metadata:
-            if event.metadata.get('paired', False):
+        if event and event.data:
+            if event.data.get('paired', False):
                 self.__register_mouth_events()
             else:
                 self.__remove_mouth_events()

@@ -135,7 +135,7 @@ class AudioConsumer(threading.Thread):
             'utterance': utterance,
             'session': SessionManager.get().session_id
         }
-        self.emitter.emit("speak", Message("speak", metadata=payload))
+        self.emitter.emit("speak", Message("speak", data=payload))
 
     def _create_remote_stt_runnable(self, audio, utterances):
         def runnable():

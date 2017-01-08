@@ -46,7 +46,7 @@ class SpeakSkill(BoomerSkill):
             self.register_regex(prefix + ' ' + suffix_regex)
 
     def handle_speak_intent(self, message):
-        words = message.metadata.get("Words")
+        words = message.data.get("Words")
         self.speak(words)
 
     def stop(self):

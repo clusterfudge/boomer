@@ -98,7 +98,7 @@ class VolumeSkill(BoomerSkill):
         return code, volume
 
     def get_volume(self, message, default=None):
-        amount = message.metadata.get('VolumeAmount', default)
+        amount = message.data.get('VolumeAmount', default)
         if not amount:
             return self.default_volume
 

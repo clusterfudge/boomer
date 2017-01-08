@@ -78,11 +78,11 @@ class PandoraSkill(MediaSkill):
     def handle_list_stations(self, message):
         p = self.ensure_connected()
         self.emitter.emit(
-            message.reply('pandora:stations', metadata=p.stations))
+            message.reply('pandora:stations', data=p.stations))
 
     def handle_select_station(self, message):
         p = self.ensure_connected()
-        station = self.station_map.get(message.metadata.get('PandoraStation'))
+        station = self.station_map.get(message.data.get('PandoraStation'))
         try:
             p.switch_station(station)
         except Exception, e:

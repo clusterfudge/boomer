@@ -75,7 +75,7 @@ class WeatherSkill(BoomerSkill):
 
     def handle_current_intent(self, message):
         try:
-            location = message.metadata.get("Location", self.location)
+            location = message.data.get("Location", self.location)
             weather = self.owm.weather_at_place(location).get_weather()
             data = self.__build_data_condition(location, weather)
             weather_code = str(weather.get_weather_icon_name())
@@ -103,7 +103,7 @@ class WeatherSkill(BoomerSkill):
 
     def handle_next_hour_intent(self, message):
         try:
-            location = message.metadata.get("Location", self.location)
+            location = message.data.get("Location", self.location)
             weather = self.owm.three_hours_forecast(
                 location).get_forecast().get_weathers()[0]
             data = self.__build_data_condition(location, weather)
@@ -123,7 +123,7 @@ class WeatherSkill(BoomerSkill):
 
     def handle_next_day_intent(self, message):
         try:
-            location = message.metadata.get("Location", self.location)
+            location = message.data.get("Location", self.location)
             weather = self.owm.daily_forecast(
                 location).get_forecast().get_weathers()[1]
             data = self.__build_data_condition(

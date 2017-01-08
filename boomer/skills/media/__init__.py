@@ -100,7 +100,7 @@ class MediaSkill(BoomerSkill):
         """
         logger.info('Stopping currently playing media if any')
         self.emitter.emit(Message('boomer.media.stop',
-                          metadata={'origin': self.name}))
+                                  data={'origin': self.name}))
 
     def handle_pause(self, message):
         """ handle_pause() should pause currently playing media """
@@ -116,7 +116,7 @@ class MediaSkill(BoomerSkill):
 
     def _media_stop(self, message):
         """ handler for 'boomer.media.stop' """
-        origin = message.metadata.get('origin', '')
+        origin = message.data.get('origin', '')
         if origin != self.name:
             self.stop()
 

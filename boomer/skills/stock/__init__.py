@@ -43,7 +43,7 @@ class StockSkill(BoomerSkill):
                              self.handle_stock_price_intent)
 
     def handle_stock_price_intent(self, message):
-        company = message.metadata.get("Company")
+        company = message.data.get("Company")
         try:
             response = self.find_and_query(company)
             self.emitter.once("recognizer_loop:audio_output_start",

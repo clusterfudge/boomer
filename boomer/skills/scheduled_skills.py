@@ -172,7 +172,7 @@ class ScheduledCRUDSkill(ScheduledSkill):
         return self.data.keys()
 
     def handle_create(self, message):
-        utterance = message.metadata.get('utterance')
+        utterance = message.data.get('utterance')
         date = self.get_utc_time(utterance)
         delay = date - self.get_utc_time()
 
@@ -192,7 +192,7 @@ class ScheduledCRUDSkill(ScheduledSkill):
             self.add(utc_time, message)
 
     def add(self, utc_time, message):
-        utterance = message.metadata.get('utterance')
+        utterance = message.data.get('utterance')
         self.data[utc_time] = None
         self.repeat_data[utc_time] = self.time_rules.get_week_days(utterance)
 
@@ -278,7 +278,7 @@ class ScheduledCRUDSkill(ScheduledSkill):
     # TODO - Localization
     def get_amount(self, message, default=None):
         size = len(self.data)
-        amount = message.metadata.get(self.name + 'Amount', default)
+        amount = message.data.get(self.name + 'Amount', default)
         if amount in ['all', 'my', 'all my', None]:
             total = size
         elif amount in ['one', 'the next', 'the following']:

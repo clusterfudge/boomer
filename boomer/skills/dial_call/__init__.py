@@ -53,7 +53,7 @@ class DialCallSkill(BoomerSkill):
 
     def handle_intent(self, message):
         try:
-            contact = message.metadata.get("Contact").lower()
+            contact = message.data.get("Contact").lower()
 
             if contact in self.contacts:
                 number = self.contacts.get(contact)
@@ -72,7 +72,7 @@ class DialCallSkill(BoomerSkill):
     def __notify(self, contact, number):
         self.emitter.emit(
             Message("dial_call",
-                    metadata={'contact': contact, 'number': number}))
+                    data={'contact': contact, 'number': number}))
 
     def stop(self):
         pass

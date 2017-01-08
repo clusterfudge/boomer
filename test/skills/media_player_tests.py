@@ -34,11 +34,11 @@ class MediaPlayerTests(unittest.TestCase):
     def testPlayMedia(self):
         events = {}
 
-        def start_event_handler(metadata):
-            events['track_start'] = metadata
+        def start_event_handler(data):
+            events['track_start'] = data
 
-        def end_event_handler(metadata):
-            events['track_end'] = metadata
+        def end_event_handler(data):
+            events['track_end'] = data
 
         self.player.on('track_start', start_event_handler)
         self.player.on('track_end', end_event_handler)

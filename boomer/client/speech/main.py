@@ -74,7 +74,7 @@ def handle_multi_utterance_intent_failure(event):
 
 
 def handle_speak(event):
-    mute_and_speak(event.metadata['utterance'])
+    mute_and_speak(event.data['utterance'])
 
 
 def handle_sleep(event):

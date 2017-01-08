@@ -53,11 +53,11 @@ def load_vocab_from_file(path, vocab_type, emitter):
 
                 emitter.emit(
                     Message("register_vocab",
-                            metadata={'start': entity, 'end': vocab_type}))
+                            data={'start': entity, 'end': vocab_type}))
                 for alias in parts[1:]:
                     emitter.emit(
                         Message("register_vocab",
-                                metadata={'start': alias, 'end': vocab_type,
+                                data={'start': alias, 'end': vocab_type,
                                           'alias_of': entity}))
 
 
@@ -68,7 +68,7 @@ def load_regex_from_file(path, emitter):
                 re.compile(line.strip())
                 emitter.emit(
                     Message("register_vocab",
-                            metadata={'regex': line.strip()}))
+                            data={'regex': line.strip()}))
 
 
 def load_vocabulary(basedir, emitter):
@@ -86,11 +86,11 @@ def load_regex(basedir, emitter):
 
 
 def create_intent_envelope(intent):
-    return Message(None, metadata=intent.__dict__, context={})
+    return Message(None, data=intent.__dict__, context={})
 
 
 def open_intent_envelope(message):
-    intent_dict = message.metadata
+    intent_dict = message.data
     return Intent(intent_dict.get('name'),
                   intent_dict.get('requires'),
                   intent_dict.get('at_least_one'),
@@ -187,7 +187,7 @@ class BoomerSkill(object):
     def detach(self):
         for name in self.registered_intents:
             self.emitter.emit(
-                Message("detach_intent", metadata={"intent_name": name}))
+                Message("detach_intent", data={"intent_name": name}))
 
     def initialize(self):
         """
@@ -220,15 +220,15 @@ class BoomerSkill(object):
     def register_vocabulary(self, entity, entity_type):
         self.emitter.emit(
             Message('register_vocab',
-                    metadata={'start': entity, 'end': entity_type}))
+                    data={'start': entity, 'end': entity_type}))
 
     def register_regex(self, regex_str):
         re.compile(regex_str)  # validate regex
         self.emitter.emit(
-            Message('register_vocab', metadata={'regex': regex_str}))
+            Message('register_vocab', data={'regex': regex_str}))
 
     def speak(self, utterance):
-        self.emitter.emit(Message("speak", metadata={'utterance': utterance}))
+        self.emitter.emit(Message("speak", data={'utterance': utterance}))
 
     def speak_dialog(self, key, data={}):
         self.speak(self.dialog_renderer.render(key, data))
