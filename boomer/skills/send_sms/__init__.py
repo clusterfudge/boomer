@@ -72,7 +72,7 @@ class SendSMSSkill(BoomerSkill):
             Message(
                 "send_sms",
                 data={'contact': contact, 'number': number,
-                          'message': msg}))
+                      'message': msg}))
 
     def stop(self):
         pass

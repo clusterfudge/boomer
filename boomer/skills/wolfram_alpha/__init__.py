@@ -171,7 +171,7 @@ class WolframAlphaSkill(BoomerSkill):
                                         others[0]})
                 self.handle_fallback(Message('intent_failure',
                                              data={'utterance':
-                                                       others[0]}))
+                                                   others[0]}))
             else:
                 self.speak_dialog("not.understood", data={'phrase': phrase})
 

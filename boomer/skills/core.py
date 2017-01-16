@@ -51,14 +51,15 @@ def load_vocab_from_file(path, vocab_type, emitter):
                 parts = line.strip().split("|")
                 entity = parts[0]
 
-                emitter.emit(
-                    Message("register_vocab",
-                            data={'start': entity, 'end': vocab_type}))
+                emitter.emit(Message("register_vocab",
+                                     data={'start': entity,
+                                           'end': vocab_type}))
                 for alias in parts[1:]:
                     emitter.emit(
                         Message("register_vocab",
-                                data={'start': alias, 'end': vocab_type,
-                                          'alias_of': entity}))
+                                data={'start': alias,
+                                      'end': vocab_type,
+                                      'alias_of': entity}))
 
 
 def load_regex_from_file(path, emitter):
