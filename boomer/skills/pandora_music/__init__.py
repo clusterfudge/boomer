@@ -43,7 +43,7 @@ class PandoraSkill(MediaSkill):
         self.pandora = pandora.Pandora(connection=PandoraConnection())
 
         # setup intents
-        list_stations_intent = IntentBuilder('pandoralist_stations')\
+        list_stations_intent = IntentBuilder('pandora:list_stations')\
             .require('BrowseMusicCommand')\
             .build()
 
